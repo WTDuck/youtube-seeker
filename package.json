@@ -1,0 +1,25 @@
+{
+  "name": "youtube-seeker",
+  "version": "1.0.0",
+  "description": "A Semi Automatic Bot to seek for Youtube Videos",
+  "repository": "github:WTDuck/youtube-seeker",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "bin": {
+    "ytsk": "./src/app.js"
+  },
+  "pkg": {
+      "scripts": "npm i"
+  },
+  "author": "Guillaume DA SILVA",
+  "license": "ISC",
+  "dependencies": {
+    "papaparse": "^5.2.0",
+    "puppeteer": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/papaparse": "^5.0.3"
+  }
+}
