@@ -2,7 +2,7 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 const Papa = require('papaparse');
 
-const result = [];
+let result = [];
 let songs = [
 ];
 let currentType = 'C';
@@ -34,12 +34,12 @@ function keyHandler(keyCode) {
         case 115: // S, skip
             console.log(`(${currentSongIndex + 1}/${songs.length}) skipping`);
             currentType = 'S';
-            result.push({
+            result[currentSongIndex] = {
                 ...songs[currentSongIndex],
                 'Mp3 Link to add': 'none',
                 'Type': 'none',
                 'Memo': 'not found'
-            });
+            };
             currentSongIndex += 1;
             currentType = 'C';
             break;
@@ -107,11 +107,11 @@ async function routine() {
                 const videoURL = new URL(request.url());
                 videoURL.searchParams.delete('pbj');
                 console.log(`(${currentSongIndex + 1}/${songs.length}) adding : ${videoURL.toString()}`);
-                result.push({
+                result[currentSongIndex] = {
                     ...songs[currentSongIndex],
                     'Mp3 Link to add': videoURL.toString(),
                     'Type': currentType
-                });
+                };
                 currentSongIndex += 1;
                 currentType = 'C';
                 await navigate(page)
@@ -149,5 +149,6 @@ const parseJSON = async (json) => {
     const [_u, _t, file = ''] = process.argv;
     if (!file) { console.error('invalid file'); return; }
     songs = await readCSV(file);
+    result = [...songs];
     await routine()
 })();
