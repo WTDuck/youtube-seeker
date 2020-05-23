@@ -8,6 +8,7 @@ let songs = [
 let currentType = 'C';
 let currentSongIndex = 0;
 let correctKeyPressed = false;
+let pause = false;
 
 function youtubifyStr(str) {
     return str.toLowerCase().replace(/\s/g, '+')
@@ -31,7 +32,7 @@ function keyHandler(keyCode) {
     correctKeyPressed = true;
     switch (keyCode) {
         case 115: // S, skip
-            console.log('skipping song..');
+            console.log(`(${currentSongIndex + 1}/${songs.length}) skipping`);
             currentType = 'S';
             result.push({
                 ...songs[currentSongIndex],
@@ -54,18 +55,26 @@ function keyHandler(keyCode) {
             currentType = 'Z';
             console.log('switch to:', typeStr(currentType));
             break;
+        case 112:
+            pause = true;
+            break;
         default:
             correctKeyPressed = false;
     }
 }
 
 async function navigate (page) {
-    if (currentSongIndex >= songs.length) {
+    if (currentSongIndex >= songs.length || pause) {
         await parseJSON(result);
         return page.browser().close();
 
     }
-    const song = songs[currentSongIndex];
+    let song = songs[currentSongIndex];
+    while (song['Mp3 Link to add'] != null && song['Mp3 Link to add'] !== '') {
+        console.log(`(${currentSongIndex + 1}/${songs.length}) skipping`);
+        currentSongIndex += 1;
+        song = songs[currentSongIndex];
+    }
     const artist = song['Artist Track on iTunes'];
     const title = song['Song Title on Itunes'];
     const url = `${youtubifyStr(artist)}+${youtubifyStr(title)}+${typeStr(currentType)}`;
